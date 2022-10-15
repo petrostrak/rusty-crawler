@@ -1,4 +1,5 @@
 mod map;
+mod map_builder;
 mod player;
 
 mod prelude {
