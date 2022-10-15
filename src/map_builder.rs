@@ -53,4 +53,68 @@ impl MapBuilder {
             }
         }
     }
+
+    fn apply_vertical_tunnel(&mut self, y1:i32, y2:i32, x:i32) {
+        use std::cmp::{min,max};
+
+        // Range iterators expect that the starting value of a range will be
+        // the minimum value, and the destination the maximum.
+        // This function uses min() and max() to find the lowest and highest
+        // of a pair of values - in this case, the starting position. It then
+        // iterates y from the start to the end of the corridor, carving the
+        // tunnel along the way.
+        for y in min(y1, y2) ..= max(y1, y2) {
+            if let Some(idx) = self.map.try_idx(Point::new(x,y)) {
+                self.map.tiles[idx as usize] = TileType::Floor;
+            }
+        }
+    }
+
+    // apply_horizontal_tunnel() works the same way as the apply_vertical_tunnel()
+    // but it traverses the x axis instead of the y axis.
+    fn apply_horizontal_tunnel(&mut self, x1:i32, x2:i32, y:i32) {
+        use std::cmp::{min, max};
+        for x in min(x1,x2) ..= max(x1,x2) {
+            if let Some(idx) = self.map.try_idx(Point::new(x,y)) {
+                self.map.tiles[idx as usize] = TileType::Floor;
+            }
+        }
+    }
+
+    fn build_corridors(&mut self, rng: &mut RandomNumberGenerator) {
+        let mut rooms = self.rooms.clone();
+        
+        // Vectors include a sort_by() to sort their contents. It requires a closure,
+        // an inline function, that calls the cmp() function on two elements of the 
+        // vector's contents. cmp() returns an indicator if two elements are the same,
+        // or one is greated than the other. Sorting the rooms by their center point 
+        // before allocating corridors makes it more likely that corridors will connect 
+        // adjacent rooms and not snake across the whole map.
+        //
+        // sort_by() sends pairs of rooms to the closure. The closure receives these as 
+        // a and b. a.center().x finds the x coordinate of room A. This is then compared 
+        // via the cmp() function with the center of room B.
+        rooms.sort_by(|a,b| a.center().x.cmp(&b.center().x));
+        
+        // enumerate() counts items in the iterator and includes them as the first entry
+        // in a tuple. The (i, room) extracts the counter into the variable i. skip() allows
+        // you to ignore some entries in the iretator, in this case, the 1st one.
+        for (i, room) in rooms.iter().enumerate().skip(1) {
+            
+            // Obtain the center position, as a Point struct, of the current and previous
+            // rooms. This is why we skip the 1st entry, the previous would be invalid.
+            let prev = rooms[i-1].center();
+            let new = room.center();
+
+            // Randomly dig the horizontal and then vertical parts of the corridor,
+            // or vice versa.
+            if rng.range(0, 2) == 1 {
+                self.apply_horizontal_tunnel(prev.x, new.x, prev.y);
+                self.apply_vertical_tunnel(prev.y, new.y, new.x);
+            } else {
+                self.apply_vertical_tunnel(prev.y, new.y, prev.x);
+                self.apply_horizontal_tunnel(prev.x, new.x, new.y);
+            }
+        }
+    }
 }
