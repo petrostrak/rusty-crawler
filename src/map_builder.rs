@@ -16,6 +16,7 @@ impl MapBuilder {
         };
         mb.fill(TileType::Wall);
         mb.build_random_rooms(rng);
+        mb.build_corridors(rng);
 
         // Set the player to start at the center of the first room in 
         // the rooms list. This ensures that they start in a valid, 
