@@ -1,4 +1,5 @@
 mod map;
+mod player;
 
 mod prelude {
     pub use bracket_lib::prelude::*; 
@@ -12,12 +13,13 @@ use prelude::*;
 
 struct State {
     map: Map,
+    player: Player,
 }
 
 impl State {
     fn new() -> Self {
         Self { 
-            map: Map::new() 
+            map: Map::new(),
             player: Player::new(
                 Point::new(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
             ),
