@@ -8,6 +8,22 @@ pub struct MapBuilder {
 }
 
 impl MapBuilder {
+    pub fn new(rng: &mut RandomNumberGenerator) -> Self {
+        let mut mb = MapBuilder {
+            map: Map::new(),
+            rooms: Vec::new(),
+            player_start: Point::zero(),
+        };
+        mb.fill(TileType::Wall);
+        mb.build_random_rooms(rng);
+
+        // Set the player to start at the center of the first room in 
+        // the rooms list. This ensures that they start in a valid, 
+        // walkable tile.
+        mb.player_start = mb.rooms[0].center();
+        mb
+    }
+
     fn fill(&mut self, tile: TileType) {
         self.map.tiles.iter_mut().for_each(|t| *t = tile);
     }
