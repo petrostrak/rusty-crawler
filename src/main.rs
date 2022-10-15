@@ -21,17 +21,23 @@ mod prelude {
 use prelude::*;
 
 struct State {
-    map: Map,
-    camera: Camera,
+    ecs: World,
+    resources: Resources,
+    systems: Schedule,
 }
 
 impl State {
     fn new() -> Self {
+        let mut ecs = World::default();
+        let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut rng);
+        resources.insert(map_builder.map);
+        resources.insert(Camera::new(map_builder.player_start));
         Self {
-            map : map_builder.map,
-            camera: Camera::new(map_builder.player_start),
+            ecs,
+            resources,
+            systems: build_scheduler()
         }
     }
 }
