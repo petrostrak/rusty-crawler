@@ -1,20 +1,20 @@
 use crate::prelude::*;
 
 pub struct Player {
-    pub possition: Point
+    pub position: Point
 }
 
 impl Player {
-    pub fn new(possition: Point) -> Self {
+    pub fn new(position: Point) -> Self {
         Self {
-            possition
+            position
         }
     }
 
     pub fn render(&self, ctx: &mut BTerm) {
         ctx.set(
-            self.possition.x,
-            self.possition.y,
+            self.position.x,
+            self.position.y,
             WHITE,
             BLACK,
             to_cp437('@'),
@@ -31,9 +31,9 @@ impl Player {
                  _ => Point::zero()
             };
 
-            let new_possition = self.possition + delta;
-            if map.can_enter_tile(new_possition) {
-                self.possition = new_possition;
+            let new_position = self.position + delta;
+            if map.can_enter_tile(new_position) {
+                self.position = new_position;
             }
         }
     }
