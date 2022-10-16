@@ -55,7 +55,11 @@ impl GameState for State {
         ctx.cls();
         ctx.set_active_console(1);
         ctx.cls();
-        // TODO: Execute Systems
+
+        // This makes the current keyboard state available 
+        // to any system that requests it.
+        self.resources.insert(ctx.key);
+        self.systems.execute(&mut self.ecs, &mut self.resources);
         // TODO: Render Draw Buffer
     }
 }
