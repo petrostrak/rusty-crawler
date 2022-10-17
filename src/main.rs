@@ -31,7 +31,9 @@ use prelude::*;
 struct State {
     ecs: World,
     resources: Resources,
-    systems: Schedule,
+    input_systems: Schedule,
+    player_systems: Schedule,
+    monster_systems: Schedule,
 }
 
 impl State {
@@ -52,7 +54,9 @@ impl State {
         Self {
             ecs,
             resources,
-            systems: build_scheduler()
+            input_systems: build_input_scheduler(),
+            player_systems: build_player_scheduler(),
+            monster_systems: build_monster_scheduler(),
         }
     }
 }
@@ -67,7 +71,31 @@ impl GameState for State {
         // This makes the current keyboard state available 
         // to any system that requests it.
         self.resources.insert(ctx.key);
-        self.systems.execute(&mut self.ecs, &mut self.resources);
+
+        // self.resources.get::<TYPE> requests a resource of a given type (in this case TurnState) 
+        // from the ECS’s resources. The result is returned as an Option, so you need to unwrap() 
+        // it to access the contents. The final call to clone() duplicates the state. This ensures 
+        // that the resource is no longer borrowed—you’re looking at a copy of the current turn state, 
+        // rather than the original. This is another example of working around Rust’s borrow checker.
+        let current_state = self.resources.get::<TurnState>().unwrap().clone();
+        match current_state {
+            TurnState::AwaitingInput => self.input_systems.execute(
+                &mut self.ecs, 
+                &mut self.resources,
+            ),
+            TurnState::PlayerTurn => {
+                self.player_systems.execute(
+                    &mut self.ecs, 
+                    &mut self.resources
+                );
+            },
+            TurnState::MonsterTurn => {
+                self.monster_systems.execute(
+                    &mut self.ecs, 
+                    &mut self.resources
+                );
+            }
+        }
         render_draw_buffer(ctx).expect("render error")
     }
 }
