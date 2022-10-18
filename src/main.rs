@@ -74,6 +74,10 @@ impl GameState for State {
         // to any system that requests it.
         self.resources.insert(ctx.key);
 
+        // Identifying Monsters with Tooltips
+        ctx.set_active_console(0);
+        self.resources.insert(Point::from_tuple(ctx.mouse_pos));
+
         // self.resources.get::<TYPE> requests a resource of a given type (in this case TurnState) 
         // from the ECS’s resources. The result is returned as an Option, so you need to unwrap() 
         // it to access the contents. The final call to clone() duplicates the state. This ensures 
