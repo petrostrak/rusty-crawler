@@ -3,14 +3,14 @@ use crate::prelude::*;
 #[system]
 #[write_component(Point)]
 #[read_component(MovingRandomly)]
-pub fn random_move(ecs: &mut SubWorld, #[resource] map: &Map) {
+pub fn random_move(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
     
     // Create a new Query with writable access to Point and read-only access to
     // MovingRandomly.
-    let mut movers = <(&mut Point, &MovingRandomly)>::query();
+    let mut movers = <(Entity, &Point, &MovingRandomly)>::query();
     movers 
         .iter_mut(ecs)
-        .for_each(|(pos, _)| {
+        .for_each(|(entity, pos, _)| {
             let mut rng = RandomNumberGenerator::new();
             
             // Randomly choose a direction to move and store the delta.
@@ -21,13 +21,8 @@ pub fn random_move(ecs: &mut SubWorld, #[resource] map: &Map) {
                 2 => Point::new(0, -1),
                 _ => Point::new(0, 1),
             } + *pos;
-
-            // Check that the destination tile is accessible.
-            // If the entity can enter the tile, move their 
-            // position to the destination.
-            if map.can_enter_tile(destination) {
-                *pos = destination;
-            }
+            commands   
+                .push(((), WantsToMove{ entity: *entity, destination }));
         }
     );
 }
