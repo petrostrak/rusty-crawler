@@ -1,3 +1,4 @@
+mod combat;
 mod end_turn;
 mod entity_render;
 mod hud;
