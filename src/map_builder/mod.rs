@@ -153,4 +153,36 @@ impl MapBuilder {
                 .unwrap().0
         )
     }
+
+    fn spawn_monsters(
+        &self, 
+        start: &Point, 
+        rng: &mut RandomNumberGenerator
+    ) -> Vec<Point> {
+        const NUM_MONSTERS : usize = 50;
+        let mut spawnable_tiles : Vec<Point> = self.map.tiles
+            .iter()
+            .enumerate()
+
+            // Filter to only include tiles that are floors and more tha 10 tiles distant
+            // from the player's start point.
+            .filter(|(idx, t)|
+                **t == TileType::Floor &&
+                    DistanceAlg::Pythagoras.distance2d(
+                        *start,
+                        self.map.index_to_point2d(*idx)
+                    ) > 10.0
+            )
+            .map(|(idx, _)| self.map.index_to_point2d(idx))
+            .collect();
+
+        let mut spawns = Vec::new();
+        for _ in 0 .. NUM_MONSTERS {
+            let target_index = rng.random_slice_index(&spawnable_tiles)
+                .unwrap();
+            spawns.push(spawnable_tiles[target_index].clone());
+            spawnable_tiles.remove(target_index);
+        }
+        spawns
+    }
 }
