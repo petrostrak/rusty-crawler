@@ -48,6 +48,39 @@ impl CellularAutomataArchitect {
         }
         map.tiles = new_tiles;
     }
+
+    fn find_start(&self, map: &Map) -> Point {
+
+        // Store the center of the map in a Point.
+        let center = Point::new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        let closest_point = map.tiles
+
+            // Iterate all of the map tiles.
+            .iter()
+
+            // Call enumerate() to append the tile's index in the tile vector to the result.
+            // Each iteration now contains a tuple of (index, tiletype).
+            .enumerate()
+
+            // Use filter() to remove all the tiles that aren't a floor. Now we have a list of the
+            // index and type of all floors in the map.
+            .filter(|(_, t)| **t == TileType::Floor)
+            
+            // Calculate the Pythagorean distance from each remaining tile to the map's center.
+            .map(|(idx, _)| (idx, DistanceAlg::Pythagoras.distance2d(
+                center,
+                map.index_to_point2d(idx)
+            )))
+
+            // min_by() finds the lowest value in an iterator set and allows you to specify the
+            // comparison technique.
+            .min_by(|(_, distance), (_, distance2)|
+                distance.partial_cmp(&distance2).unwrap()
+            )
+            .map(|(idx, _)| idx)
+            .unwrap();
+        map.index_to_point2d(closest_point)
+    }
 }
 
 impl MapArchitect for CellularAutomataArchitect {
