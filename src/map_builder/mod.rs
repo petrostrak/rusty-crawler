@@ -3,6 +3,7 @@ use crate::prelude::*;
 mod automata;
 mod drunkard;
 mod rooms;
+mod prefab;
 use self::drunkard::DrunkardsWalkArchitect;
 
 trait MapArchitect {
