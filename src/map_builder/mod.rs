@@ -1,5 +1,8 @@
 use crate::prelude::*;
 
+mod empty;
+use empty::EmptyArchitect;
+
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
 }
@@ -9,46 +12,15 @@ const NUM_ROOMS: usize = 20;
 pub struct MapBuilder {
     pub map: Map,
     pub rooms: Vec<Rect>,
+    pub monster_spawns: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
 }
 
 impl MapBuilder {
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut mb = MapBuilder {
-            map: Map::new(),
-            rooms: Vec::new(),
-            player_start: Point::zero(),
-            amulet_start: Point::zero(),
-        };
-        mb.fill(TileType::Wall);
-        mb.build_random_rooms(rng);
-        mb.build_corridors(rng);
-
-        // Set the player to start at the center of the first room in 
-        // the rooms list. This ensures that they start in a valid, 
-        // walkable tile.
-        mb.player_start = mb.rooms[0].center();
-
-        let dijkstra_map = DijkstraMap::new(
-            SCREEN_WIDTH,
-            SCREEN_HEIGHT,
-            &vec![mb.map.point2d_to_index(mb.player_start)],
-            &mb.map,
-            1024.0
-        );
-
-        const UNREACHABLE: &f32 = &f32::MAX;
-        mb.amulet_start = mb.map.index_to_point2d(
-            dijkstra_map.map
-                .iter()
-                .enumerate()
-                .filter(|(_,dist)| *dist < UNREACHABLE)
-                .max_by(|a,b| a.1.partial_cmp(b.1).unwrap())
-                .unwrap().0
-        );
-
-        mb
+        let mut architect = EmptyArchitect{};
+        architect.new(rng)
     }
 
     fn fill(&mut self, tile: TileType) {
