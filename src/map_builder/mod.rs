@@ -1,6 +1,7 @@
 use crate::prelude::*;
 
 mod automata;
+mod drunkard;
 mod rooms;
 use self::automata::CellularAutomataArchitect;
 
