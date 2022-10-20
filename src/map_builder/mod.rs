@@ -4,7 +4,7 @@ mod automata;
 mod drunkard;
 mod rooms;
 mod prefab;
-use self::drunkard::DrunkardsWalkArchitect;
+use self::{drunkard::DrunkardsWalkArchitect, prefab::apply_prefab};
 
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
@@ -23,6 +23,8 @@ pub struct MapBuilder {
 impl MapBuilder {
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
         let mut architect = DrunkardsWalkArchitect{};
+        let mut mb = architect.new(rng);
+        apply_prefab(&mut mb, rng);
         architect.new(rng)
     }
 
