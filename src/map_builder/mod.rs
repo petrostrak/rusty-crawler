@@ -1,8 +1,7 @@
 use crate::prelude::*;
 
-mod empty;
+mod automata;
 mod rooms;
-use empty::EmptyArchitect;
 use rooms::RoomsArchitect;
 
 trait MapArchitect {
