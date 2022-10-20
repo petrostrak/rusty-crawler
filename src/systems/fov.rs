@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 #[system]
 #[read_component(Point)]
-#[read_component(FieldOfView)]
+#[write_component(FieldOfView)]
 pub fn fov(
     ecs: &mut SubWorld,
     #[resource] map: &Map,
