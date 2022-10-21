@@ -2,8 +2,9 @@ use crate::prelude::*;
 
 mod automata;
 mod drunkard;
-mod rooms;
 mod prefab;
+mod rooms;
+mod themes;
 use self::{drunkard::DrunkardsWalkArchitect, prefab::apply_prefab, rooms::RoomsArchitect, automata::CellularAutomataArchitect};
 
 pub trait MapTheme: Sync + Send {
