@@ -108,6 +108,8 @@ impl State {
             self.reset_game_state();
         }
     }
+
+    fn advance_level(&mut self) {}
 }
 
 impl GameState for State {
@@ -135,6 +137,9 @@ impl GameState for State {
             }
             TurnState::Victory => {
                 self.victory(ctx);
+            },
+            TurnState::NextLevel => {
+                self.advance_level();
             }
         }
         render_draw_buffer(ctx).expect("Render error");
