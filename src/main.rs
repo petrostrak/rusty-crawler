@@ -109,7 +109,13 @@ impl State {
         }
     }
 
-    fn advance_level(&mut self) {}
+    fn advance_level(&mut self) {
+        let player_entity = *<Entity>::query()
+            .filter(component::<Player>())
+            .iter(&mut self.ecs)
+            .nth(0)
+            .unwrap();
+    }
 }
 
 impl GameState for State {
