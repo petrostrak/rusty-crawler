@@ -158,7 +158,16 @@ impl State {
                 map_level = player.map_level;
                 pos.x = map_builder.player_start.x;
                 pos.y = map_builder.player_start.y;
-            })
+            }
+        );
+        
+        // Spawn the amulet or a staircase
+        if map_level == 2 {
+            spawn_amulet_of_yala(&mut self.ecs, map_builder.amulet_start);
+        } else {
+            let exit_idx = map_builder.map.point2d_to_index(map_builder.amulet_start);
+            map_builder.map.tiles[exit_idx] = TileType::Exit;
+        }
     }
 }
 
