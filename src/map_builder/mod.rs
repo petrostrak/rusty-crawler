@@ -6,6 +6,10 @@ mod rooms;
 mod prefab;
 use self::{drunkard::DrunkardsWalkArchitect, prefab::apply_prefab, rooms::RoomsArchitect, automata::CellularAutomataArchitect};
 
+pub trait MapTheme: Sync + Send {
+    fn tile_to_render(&self, tile_type: TileType) -> FontCharType;
+}
+
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
 }
