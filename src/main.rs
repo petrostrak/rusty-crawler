@@ -144,6 +144,10 @@ impl State {
         <&mut FieldOfView>::query()
             .iter_mut(&mut self.ecs)
             .for_each(|fov| fov.is_dirty = true);
+
+        // Create a new map
+        let mut rng = RandomNumberGenerator::new();
+        let mut map_builder = MapBuilder::new(&mut rng);
     }
 }
 
