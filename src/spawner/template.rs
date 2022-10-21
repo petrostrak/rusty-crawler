@@ -13,7 +13,8 @@ pub struct Template {
     pub name : String,
     pub glyph : char,
     pub provides : Option<Vec<(String, i32)>>,
-    pub hp : Option<i32>
+    pub hp : Option<i32>,
+    pub base_damage : Option<i32>
 }
 
 #[derive(Clone, Deserialize, Debug, PartialEq)]
