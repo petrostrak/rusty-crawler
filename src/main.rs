@@ -148,6 +148,17 @@ impl State {
         // Create a new map
         let mut rng = RandomNumberGenerator::new();
         let mut map_builder = MapBuilder::new(&mut rng);
+
+        // Place the player in the new map
+        let mut map_level = 0;
+        <(&mut Player, &mut Point)>::query()
+            .iter_mut(&mut self.ecs)
+            .for_each(|(player, pos)| {
+                player.map_level += 1;
+                map_level = player.map_level;
+                pos.x = map_builder.player_start.x;
+                pos.y = map_builder.player_start.y;
+            })
     }
 }
 
