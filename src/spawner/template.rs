@@ -25,3 +25,19 @@ pub enum EntityType {
 pub struct Templates {
     pub entities : Vec<Template>,
 }
+
+impl Templates {
+    pub fn load() -> Self {
+
+        // File::open returns a Result. Since the file may not exist, or you
+        // may not have access to it, you need to handle the error.
+        let file = File::open("resources/template.ron")
+            .expect("Failed opening file");
+        
+        // from_reader calls Serde to open the file. If Serde cannot read the contents
+        // of the file, the function will return an error, so we use expect to unwrap 
+        // the returned option.
+        from_reader(file)
+            .expect("Unable to load templates")
+    }
+}
