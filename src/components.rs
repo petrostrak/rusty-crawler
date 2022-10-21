@@ -62,3 +62,8 @@ impl FieldOfView {
         Self { visible_tiles: HashSet::new(), radius: self.radius, is_dirty: true }
     }
 }
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ProvidesHealing {
+    pub amount: i32,
+}
