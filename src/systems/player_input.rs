@@ -19,6 +19,7 @@ use crate::prelude::*;
 #[write_component(Health)]
 #[read_component(Item)]
 #[read_component(Carried)]
+#[read_component(Weapon)]
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
@@ -26,6 +27,8 @@ pub fn player_input(
     #[resource] turn_state : &mut TurnState
 ) {
     let mut players = <(Entity, &Point)>::query().filter(component::<Player>());
+    let mut enemies = <(Entity, &Point)>::query().filter(component::<Enemy>());
+
     if let Some(key) = *key {
         let delta = match key {
             VirtualKeyCode::Left => Point::new(-1, 0),
@@ -37,13 +40,24 @@ pub fn player_input(
                     .iter(ecs)
                     .find_map(|(entity, pos)| Some((*entity, *pos)))
                     .unwrap();
+
                 let mut items = <(Entity, &Item, &Point)>::query();
-                items
-                    .iter(ecs)
+                items.iter(ecs)
                     .filter(|(_entity, _item, &item_pos)| item_pos == player_pos)
                     .for_each(|(entity, _item, _item_pos)| {
                         commands.remove_component::<Point>(*entity);
                         commands.add_component(*entity, Carried(player));
+
+                        if let Ok(e) = ecs.entry_ref(*entity) {
+                            if e.get_component::<Weapon>().is_ok() {
+                                <(Entity, &Carried, &Weapon)>::query()
+                                .iter(ecs)
+                                .filter(|(_, c, _)| c.0 == player)
+                                .for_each(|(e, c, w)| {
+                                    commands.remove(*e);
+                                })
+                            }
+                        }
                     }
                 );
                 Point::new(0, 0)
@@ -65,25 +79,25 @@ pub fn player_input(
                 .find_map(|(entity, pos)| Some((*entity, *pos + delta)) )
                 .unwrap();
 
-        let mut enemies = <(Entity, &Point)>::query().filter(component::<Enemy>());
         let mut did_something = false;
         if delta.x !=0 || delta.y != 0 {
-            let mut hit_something = false;
-            enemies
-                .iter(ecs)
-                .filter(|(_, pos)| {
-                    **pos == destination
-                })
-                .for_each(|(entity, _) | {
-                    hit_something = true;
-                    did_something = true;
 
-                    commands
-                        .push(((), WantsToAttack{
-                            attacker: player_entity,
-                            victim: *entity,
-                        }));
-                });
+        let mut hit_something = false;
+        enemies
+            .iter(ecs)
+            .filter(|(_, pos)| {
+                **pos == destination
+            })
+            .for_each(|(entity, _) | {
+                hit_something = true;
+                did_something = true;
+
+                commands
+                    .push(((), WantsToAttack{
+                        attacker: player_entity,
+                        victim: *entity,
+                    }));
+            });
 
             if !hit_something {
                 did_something = true;
@@ -93,7 +107,7 @@ pub fn player_input(
                         destination
                     }));
             }
-        }
+        };
         *turn_state = TurnState::PlayerTurn;
     }
 }
