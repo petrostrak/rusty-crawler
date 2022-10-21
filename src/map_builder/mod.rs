@@ -5,7 +5,7 @@ mod drunkard;
 mod prefab;
 mod rooms;
 mod themes;
-use self::{drunkard::DrunkardsWalkArchitect, prefab::apply_prefab, rooms::RoomsArchitect, automata::CellularAutomataArchitect};
+use self::{drunkard::DrunkardsWalkArchitect, prefab::apply_prefab, rooms::RoomsArchitect, automata::CellularAutomataArchitect, themes::*};
 
 pub trait MapTheme: Sync + Send {
     fn tile_to_render(&self, tile_type: TileType) -> FontCharType;
@@ -35,7 +35,13 @@ impl MapBuilder {
         };
         let mut mb = architect.new(rng);
         apply_prefab(&mut mb, rng);
-        architect.new(rng)
+
+        mb.theme = match rng.range(0, 2) {
+            0 => DungeonTheme::new(),
+            _ => ForestTheme::new(),
+        };
+        
+        mb
     }
 
     fn fill(&mut self, tile: TileType) {
