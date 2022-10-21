@@ -28,4 +28,15 @@ pub fn use_items(
         commands.remove(activate.item);
         commands.remove(*entity);
     });
+
+    for heal in healing_to_apply.iter() {
+        if let Ok(mut target) = ecs.entry_mut(heal.0) {
+            if let Ok(health) = target.get_component_mut::<Health>() {
+                health.current = i32::min(
+                    health.max,
+                    health.current+heal.1
+                );
+            }
+        }
+    }
 }
