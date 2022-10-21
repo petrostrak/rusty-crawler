@@ -23,6 +23,7 @@ pub struct MapBuilder {
     pub monster_spawns: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
+    pub theme: Box<dyn MapTheme>,
 }
 
 impl MapBuilder {

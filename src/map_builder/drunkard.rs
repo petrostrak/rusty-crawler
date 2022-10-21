@@ -51,7 +51,8 @@ impl MapArchitect for DrunkardsWalkArchitect {
             rooms : Vec::new(),
             monster_spawns : Vec::new(),
             player_start : Point::zero(),
-            amulet_start : Point::zero()
+            amulet_start : Point::zero(),
+            theme: super::themes::DungeonTheme::new(),
         };
 
         mb.fill(TileType::Wall);
