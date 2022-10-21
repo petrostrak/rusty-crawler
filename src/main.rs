@@ -139,6 +139,11 @@ impl State {
             }
         }
         cb.flush(&mut self.ecs);
+
+        // Set the field of view to dirty
+        <&mut FieldOfView>::query()
+            .iter_mut(&mut self.ecs)
+            .for_each(|fov| fov.is_dirty = true);
     }
 }
 
