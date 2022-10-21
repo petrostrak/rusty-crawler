@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use template::Templates;
 mod template;
 
 pub fn spawn_player(ecs: &mut World, pos: Point) {
@@ -110,4 +111,14 @@ pub fn spawn_entity(
         2 => spawn_magic_mapper(ecs, pos),
         _ => spawn_monster(ecs, rng, pos),
     }
+}
+
+pub fn spawn_level(
+    ecs: &mut World,
+    rng: &mut RandomNumberGenerator,
+    level: usize,
+    spawn_points: &[Point]
+) {
+    let template = Templates::load();
+    template.spawn_entities(ecs, rng, level, spawn_points);
 }
