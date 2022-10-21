@@ -15,6 +15,7 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
             },
             Health{current: 10, max: 10},
             FieldOfView::new(8),
+            Damage(1),
         )
     );
 }
