@@ -18,6 +18,20 @@ Templates(
             frequency: 1
         ),
         Template(
+            entity_type: Item,
+            name : "Rusty Sword", glyph: 's', levels: [ 0, 1, 2 ], frequency: 1,
+            base_damage: Some(1)
+        ),
+        Template(
+            entity_type: Item,
+            name : "Shiny Sword", glyph: 'S', levels: [ 0, 1, 2 ], frequency: 1,
+            base_damage: Some(2)
+        ), Template(
+            entity_type: Item,
+            name : "Huge Sword", glyph: '/', levels: [ 1, 2 ], frequency: 1,
+            base_damage: Some(3)
+        ),
+        Template(
             entity_type: Enemy,
             name : "Goblin", glyph : 'g', levels : [ 0 ], hp : Some(1),
             frequency: 3,
