@@ -111,12 +111,15 @@ impl State {
     }
 
     fn advance_level(&mut self) {
+
+        // Find the player.
         let player_entity = *<Entity>::query()
             .filter(component::<Player>())
             .iter(&mut self.ecs)
             .nth(0)
             .unwrap();
 
+        // Mark entities to keep.
         let mut entities_to_keep = HashSet::new();
         entities_to_keep.insert(player_entity);
         <(Entity, &Carried)>::query()
@@ -127,6 +130,15 @@ impl State {
                 entities_to_keep.insert(e);
             }
         );
+
+        // Remove the other entities.
+        let mut cb = CommandBuffer::new(&mut self.ecs);
+        for e in Entity::query().iter(&self.ecs) {
+            if !entities_to_keep.contains(e) {
+                cb.remove(*e);
+            }
+        }
+        cb.flush(&mut self.ecs);
     }
 }
 
