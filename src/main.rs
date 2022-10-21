@@ -27,6 +27,7 @@ mod prelude {
 }
 
 use prelude::*;
+use std::collections::HashSet;
 
 struct State {
     ecs : World,
@@ -115,6 +116,17 @@ impl State {
             .iter(&mut self.ecs)
             .nth(0)
             .unwrap();
+
+        let mut entities_to_keep = HashSet::new();
+        entities_to_keep.insert(player_entity);
+        <(Entity, &Carried)>::query()
+            .iter(&self.ecs)
+            .filter(|(_e, carry)| carry.0 == player_entity)   
+            .map(|(e, _carry)| *e)
+            .for_each(|e| {
+                entities_to_keep.insert(e);
+            }
+        );
     }
 }
 
