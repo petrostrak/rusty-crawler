@@ -10,3 +10,4 @@ To play:
 ```
 cd rusty-crawler && cargo run
 ```
+![alt text](https://github.com/petrostrak/rusty-crawler/blob/main/imgs/rustycrawler.png)

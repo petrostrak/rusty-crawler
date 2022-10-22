@@ -218,7 +218,7 @@ impl GameState for State {
 
 fn main() -> BError {
     let context = BTermBuilder::new()
-        .with_title("Dungeon Crawler")
+        .with_title("Rusty Crawler")
         .with_fps_cap(30.0)
         .with_dimensions(DISPLAY_WIDTH, DISPLAY_HEIGHT)
         .with_tile_dimensions(32, 32)
